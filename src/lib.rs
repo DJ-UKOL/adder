@@ -13,7 +13,17 @@ pub fn greeting(name: &str) -> String {
     format!("Hello {name}!")
 }
 
-#[cfg(test)]            // атрибут указывает, что это тестовая функция
+pub fn prints_and_returns_10(a: i32) -> i32 {
+    println!("I got the value {a}");
+    10
+}
+
+// Приватная функция
+fn internal_adder(left: u64, right: u64) -> u64 {
+    left + right
+}
+
+#[cfg(test)]            // атрибут указывает, что это тестовая функция и они не должны быть включены в скомпилированный результат
 mod tests {
     use crate::rectangle::Rectangle;
     use crate::guess::Guess;
@@ -87,5 +97,25 @@ mod tests {
         } else {
             Err(String::from("two plus two does not equal four"))   // Err со String внутри, когда тест не проходит
         }
+    }
+
+    #[test]
+    fn this_test_will_pass() {
+        let value = prints_and_returns_10(4);
+        assert_eq!(value, 10);
+    }
+
+    #[test]
+    #[ignore]       // игнорирование теста
+    fn this_test_will_fail() {
+        let value = prints_and_returns_10(8);
+        assert_eq!(value, 5);
+    }
+
+    // В RUST можно тестировать приватную функцию с помощью use super::*
+    #[test]
+    fn internal() {
+        let result = internal_adder(2, 2);
+        assert_eq!(result, 4);
     }
 }
